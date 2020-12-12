@@ -23,8 +23,16 @@ async function getAllTags() {
   return allTags;
 }
 
+async function getAllLinksTags() {
+  const { rows: allLinksTags } = await client.query(`
+  SELECT *
+  FROM links_tags
+  `);
+  return allLinksTags;
+}
+
 async function createLink({ name, link, comment, tags }) {
-  console.log("Starting to generate a new link!");
+  console.log("Creating a new link!");
   try {
     // creates a new link
     const {
@@ -39,9 +47,10 @@ async function createLink({ name, link, comment, tags }) {
     );
 
     const tagIds = await createTags(tags);
-    console.log("tagIds: ", tagIds);
+    console.log("tagIds:", tagIds);
 
-    console.log("Finished generating a new link!");
+    const link_tags = await createLinkTags(createdLink.id, tagIds);
+
     return createdLink;
   } catch (error) {
     throw error;
@@ -49,22 +58,18 @@ async function createLink({ name, link, comment, tags }) {
 }
 
 async function createTags(tags) {
-  console.log("this is the create tags function");
-  // initializes tagIdArray
-  const tagIdArray = [];
+  const tagIdArray = await Promise.all(
+    tags.map(async (tag) => {
+      const newTag = await createTag(tag);
+      return newTag.id;
+    })
+  );
 
-  // gets all existing tags
-  const allTags = await getAllTags();
-
-  tags.forEach(async (tag) => {
-    const newTag = await createTag(tag);
-    tagIdArray.push(newTag.id);
-  });
   return tagIdArray;
 }
 
 async function createTag(tag) {
-  console.log("Starting to generate a new tag!");
+  console.log("Creating a new tag!");
   try {
     const {
       rows: [createdTag],
@@ -74,22 +79,30 @@ async function createTag(tag) {
       VALUES ($1)
       ON CONFLICT (tag)
       DO
-        UPDATE SET tag = tags.tag
+        UPDATE SET tag = $1
       RETURNING *
     `,
-      [tag]
+      [tag.toLowerCase()]
     );
-    console.log("Finished generating a new tag!");
     console.log("created tag:", createdTag);
     return createdTag;
   } catch (error) {
     throw error;
   }
 }
-// insert fat @ id 1
-// insert cats @ id2
-// insert fat AGAIN @ id3, but theres a conflict
-// update
+
+async function createLinkTags(linkId, tagIdArray) {
+  tagIdArray.forEach(async (id) => {
+    await client.query(
+      `
+      INSERT INTO links_tags("linkId", "tagId")
+      VALUES ($1, $2)
+      RETURNING *
+    `,
+      [linkId, id]
+    );
+  });
+}
 
 // export
 module.exports = {
@@ -99,4 +112,21 @@ module.exports = {
   createTag,
   getAllLinks,
   getAllTags,
+  getAllLinksTags,
 };
+
+/*
+join table command!
+
+SELECT links.id, links.name, tags.tag FROM links
+LEFT JOIN links_tags on links.id = links_tags."linkId"
+JOIN tags on links_tags."tagId" = tags.id
+WHERE links.id = 1
+
+~ or ~
+
+SELECT tags.tag FROM links
+LEFT JOIN links_tags on links.id = links_tags."linkId"
+JOIN tags on links_tags."tagId" = tags.id
+WHERE links.id = 1;
+*/

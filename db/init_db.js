@@ -5,6 +5,7 @@ const {
   createTag,
   getAllLinks,
   getAllTags,
+  getAllLinksTags,
 } = require("./index");
 
 async function buildTables() {
@@ -21,6 +22,7 @@ async function buildTables() {
     `);
 
     console.log("Finished dropping tables!");
+    console.log("");
 
     // build tables in correct order
     console.log("Starting to construct tables...");
@@ -36,17 +38,18 @@ async function buildTables() {
       );
     
       CREATE TABLE tags(
-        "tagId" SERIAL PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         tag varchar(255) UNIQUE NOT NULL
       );
 
       CREATE TABLE links_tags(
         "linkId" INTEGER REFERENCES links(id),
-        "tagId" INTEGER REFERENCES tags("tagId")
+        "tagId" INTEGER REFERENCES tags(id)
       );
       `);
 
     console.log("Finished constructing tables!");
+    console.log("");
   } catch (error) {
     throw error;
   }
@@ -60,7 +63,7 @@ async function populateInitialData() {
       link:
         "https://www.istockphoto.com/photos/fat-cat?phrase=fat%20cat&sort=mostpopular",
       comment: "I love fat cats!",
-      tags: ["fat", "cats"],
+      tags: ["FAT", "cats"],
     };
 
     const fatDogs = {
@@ -68,22 +71,33 @@ async function populateInitialData() {
       link:
         "https://www.istockphoto.com/photos/fat-dog?phrase=fat%20dog&sort=mostpopular",
       comment: "I love fat dogs!",
-      tags: ["fat", "dogs"],
+      tags: ["fat", "DOGS"],
     };
 
     // create useful starting data
 
     console.log("Trying to populate initial data...");
+    console.log("");
+
+    console.log("--- Creating fatCats ---");
     const testCats = await createLink(fatCats);
+    console.log("");
+
+    console.log("--- Creating fatDogs ---");
     const testDogs = await createLink(fatDogs);
-    console.log("Finished populating initial data!");
+    console.log("");
 
     console.log("Logging initial data...");
+    console.log("");
+
     const allLinks = await getAllLinks();
     console.log("All links:", allLinks);
+
     const allTags = await getAllTags();
     console.log("All tags: ", allTags);
-    console.log("Finished logging initial data!");
+
+    const allLinksTags = await getAllLinksTags();
+    console.log("All links_tags: ", allLinksTags);
   } catch (error) {
     throw error;
   }
