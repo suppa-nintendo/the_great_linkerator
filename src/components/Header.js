@@ -10,7 +10,7 @@ const Header = () => {
       style={{
         height: "150px",
         // backgroundImage: 'url("doofen.png")',
-        backgroundColor: "red",
+        backgroundColor: "#A9A6DB",
         objectFit: "scale-down",
       }}
     >

@@ -11,7 +11,6 @@ import "./index.css";
 import {
   getAllLinks,
   getAllTags,
-  getSomething,
   newLinkRequest,
   updateClickCount,
   getTagsByLinkId,
@@ -32,12 +31,7 @@ const App = () => {
       // gets initial link data to be rendered
       let linksData = await getAllLinks();
 
-      // adds the appropriate tags to the each link in the array
-      linksData.forEach(async (link) => {
-        const link_tags = await getTagsByLinkId(link.id);
-        link.tags = [...link_tags];
-      });
-
+      // sets links into two pieces of state
       setAllLinks(linksData);
       setLinks(linksData);
 

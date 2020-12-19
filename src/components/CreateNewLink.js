@@ -87,18 +87,23 @@ const CreateNewLink = ({ links, setLinks, newLinkRequest }) => {
 
     let parsedLinkTags = linkTags.trim().split(",");
 
+    let trimmedLinkTags = [];
+
+    for (let i = 0; i < parsedLinkTags.length; i++) {
+      trimmedLinkTags.push(parsedLinkTags[i].trim());
+    }
+
     let newLink = {
       link: {
         name: linkName,
         link: linkUrl,
         comment: linkComment,
-        tags: [...parsedLinkTags],
+        tags: [...trimmedLinkTags],
       },
     };
 
     let linkToPush = await newLinkRequest(newLink);
-    linkToPush.tags = [...parsedLinkTags];
-    console.log("linkToPush:", linkToPush);
+    linkToPush.tags = [...trimmedLinkTags];
     let copy = [...links];
     copy.push(linkToPush);
     console.log("copyArray:", copy);

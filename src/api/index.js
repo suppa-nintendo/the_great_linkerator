@@ -11,8 +11,17 @@ export async function getSomething() {
 
 export async function getAllLinks() {
   try {
+    // gets all links in the database
     const { data } = await axios.get("/api/links");
+
+    // adds the appropriate tags to the each link in the array
+    await data.forEach(async (link) => {
+      const link_tags = await getTagsByLinkId(link.id);
+      link.tags = [...link_tags];
+    });
+
     console.log("links: ", data);
+
     return data;
   } catch (error) {
     throw error;

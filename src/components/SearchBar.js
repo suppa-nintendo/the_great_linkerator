@@ -12,11 +12,15 @@ const SearchBar = ({ allLinks, links, setLinks }) => {
     copy.forEach((link) => {
       let linkName = link.name.toLowerCase();
       let linkComment = link.comment.toLowerCase();
+      let linkUrl = link.link.toLowerCase();
       if (linkName.includes(val)) {
         console.log("Match in name!");
         filtered.push(link);
       } else if (linkComment.includes(val)) {
         console.log("Match in comment!");
+        filtered.push(link);
+      } else if (linkUrl.includes(val)) {
+        console.log("Match in url!");
         filtered.push(link);
       } else {
         console.log("No match!");
@@ -44,5 +48,3 @@ const SearchBar = ({ allLinks, links, setLinks }) => {
 };
 
 export default SearchBar;
-
-// https://fathomless-chamber-41147.herokuapp.com/ | https://git.heroku.com/fathomless-chamber-41147.git
