@@ -104,6 +104,60 @@ async function createLinkTags(linkId, tagIdArray) {
   });
 }
 
+// async function getLinkById(linkId) {
+//   try {
+//     const {
+//       rows: [link],
+//     } = await client.query(
+//       `
+//     SELECT *
+//     FROM links
+//     WHERE id = $1
+//   `,
+//       [linkId]
+//     );
+//     return link;
+//   } catch (error) {
+//     throw error;
+//   }
+// }
+
+async function updateClickCount(linkId) {
+  try {
+    const {
+      rows: [updatedLink],
+    } = await client.query(
+      `
+      UPDATE links
+      SET "clickCount" = "clickCount" + 1
+      WHERE id = $1
+      RETURNING *
+    `,
+      [linkId]
+    );
+    return updatedLink;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function getTagsByLinkId(linkId) {
+  try {
+    const { rows: tags } = await client.query(
+      `
+      SELECT tags.tag FROM links
+      LEFT JOIN links_tags on links.id = links_tags."linkId"
+      JOIN tags on links_tags."tagId" = tags.id
+      WHERE links.id = $1;
+      `,
+      [linkId]
+    );
+    return tags;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // export
 module.exports = {
   client,
@@ -113,6 +167,8 @@ module.exports = {
   getAllLinks,
   getAllTags,
   getAllLinksTags,
+  updateClickCount,
+  getTagsByLinkId,
 };
 
 /*

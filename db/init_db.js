@@ -6,6 +6,7 @@ const {
   getAllLinks,
   getAllTags,
   getAllLinksTags,
+  updateClickCount,
 } = require("./index");
 
 async function buildTables() {
@@ -58,20 +59,25 @@ async function buildTables() {
 async function populateInitialData() {
   try {
     // initial data objects
-    const fatCats = {
-      name: "Fat Cats",
-      link:
-        "https://www.istockphoto.com/photos/fat-cat?phrase=fat%20cat&sort=mostpopular",
-      comment: "I love fat cats!",
-      tags: ["FAT", "cats"],
+    const headerFont = {
+      name: "Phineas and Ferb Font",
+      link: "https://fontmeme.com/fonts/ferbtastic-font/#previewtool",
+      comment: "This is the font I used for the header!",
+      tags: ["Phineas", "Ferb", "FoNt", "cartOON"],
     };
 
-    const fatDogs = {
-      name: "Fat Dogs",
-      link:
-        "https://www.istockphoto.com/photos/fat-dog?phrase=fat%20dog&sort=mostpopular",
+    const fatDog = {
+      name: "Gracie is a fat dog",
+      link: "https://www.instagram.com/drivingmegracie/",
       comment: "I love fat dogs!",
-      tags: ["fat", "DOGS"],
+      tags: ["fat", "DOG", "chihuahua"],
+    };
+
+    const axiosDoc = {
+      name: "Axios Documentation",
+      link: "https://github.com/axios/axios",
+      comment: "This is the documentation for Axios on GitHub",
+      tags: ["Axios", "documentation", "github"],
     };
 
     // create useful starting data
@@ -80,11 +86,15 @@ async function populateInitialData() {
     console.log("");
 
     console.log("--- Creating fatCats ---");
-    const testCats = await createLink(fatCats);
+    const testFont = await createLink(headerFont);
     console.log("");
 
     console.log("--- Creating fatDogs ---");
-    const testDogs = await createLink(fatDogs);
+    const testDog = await createLink(fatDog);
+    console.log("");
+
+    console.log("--- Creating axios ---");
+    const testAxiosDoc = await createLink(axiosDoc);
     console.log("");
 
     console.log("Logging initial data...");
