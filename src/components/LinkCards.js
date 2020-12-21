@@ -4,10 +4,16 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 
-const LinkCards = ({ links, updateClickCount, getTagsByLinkId }) => {
+const LinkCards = ({
+  links,
+  allLinks,
+  setLinks,
+  updateClickCount,
+  setSearchVal,
+}) => {
   function renderAllCards(linkArray) {
     return linkArray.map((link) => {
-      return renderCard(link, getTagsByLinkId);
+      return renderCard(link);
     });
   }
 
@@ -23,15 +29,41 @@ const LinkCards = ({ links, updateClickCount, getTagsByLinkId }) => {
         tags,
       } = singleLink;
 
+      // converts dateShared to a more readable format
+      let parsedDate = new Date(dateShared);
+
+      // search function based on tag
+      function searcher(val) {
+        let copy = [...allLinks];
+        let filtered = [];
+        copy.forEach((link) => {
+          link.tags.forEach((tag) => {
+            if (tag.tag === val) {
+              filtered.push(link);
+            }
+          });
+        });
+        setLinks(filtered);
+      }
+
       const tagMapper = (tagsArray) => {
         return tagsArray.map((tagObject, index) => {
           return (
-            <Button variant="outline-info" key={index}>
+            <Button
+              variant="outline-info"
+              key={index}
+              onClick={() => {
+                setSearchVal(tagObject.tag);
+                searcher(tagObject.tag);
+              }}
+            >
               {tagObject.tag}
             </Button>
           );
         });
       };
+
+      // console.log('im testing dat parsers:' dateShared.parse().format(mm/dd/yy))
 
       return (
         <Card
@@ -46,12 +78,13 @@ const LinkCards = ({ links, updateClickCount, getTagsByLinkId }) => {
             marginRight: "auto",
           }}
         >
-          <Card.Header>{name}</Card.Header>
+          <Card.Header>
+            {name} | Clicked {clickCount} {clickCount === 1 ? "time" : "times"}
+          </Card.Header>
           <Card.Body>
             <Card.Title>{comment}</Card.Title>
             <Card.Text
               onClick={() => {
-                console.log("hello you clicked a link!");
                 updateClickCount(id);
               }}
             >
@@ -59,20 +92,40 @@ const LinkCards = ({ links, updateClickCount, getTagsByLinkId }) => {
                 {link}
               </a>
             </Card.Text>
+            <ButtonGroup size="sm">{tags ? tagMapper(tags) : ""}</ButtonGroup>
           </Card.Body>
-          <ButtonGroup size="sm">{tags ? tagMapper(tags) : ""}</ButtonGroup>
           <Card.Footer className="text-muted">
-            Clicked: {clickCount} | Shared: {dateShared}
+            Shared: {parsedDate.toString()}
           </Card.Footer>
         </Card>
       );
     }
   }
 
-  if (links) {
+  if (links.length) {
     return <>{renderAllCards(links)}</>;
   } else {
-    return <>Cards Not Found</>;
+    return (
+      <>
+        <Card
+          className="text-center link-card"
+          border="danger"
+          style={{
+            marginBottom: "10px",
+            width: "80%",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          <Card.Header>No links to display...</Card.Header>
+          <Card.Body>
+            <Card.Text>
+              There's nothing here! Try searching for something else!
+            </Card.Text>
+          </Card.Body>
+        </Card>
+      </>
+    );
   }
 };
 

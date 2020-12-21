@@ -105,7 +105,7 @@ const CreateNewLink = ({ links, setLinks, newLinkRequest }) => {
     let linkToPush = await newLinkRequest(newLink);
     linkToPush.tags = [...trimmedLinkTags];
     let copy = [...links];
-    copy.push(linkToPush);
+    copy.unshift(linkToPush);
     console.log("copyArray:", copy);
     setLinks(copy);
 

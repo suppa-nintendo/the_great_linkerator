@@ -20,8 +20,7 @@ export async function getAllLinks() {
       link.tags = [...link_tags];
     });
 
-    console.log("links: ", data);
-
+    console.log("links:", data);
     return data;
   } catch (error) {
     throw error;
@@ -50,7 +49,7 @@ export async function newLinkRequest(newLinkData) {
 
 export async function updateClickCount(linkId) {
   try {
-    const { data } = await axios.post("/api/clickCount", { id: linkId });
+    const { data } = await axios.post("/api/links/clickCount", { id: linkId });
     console.log("clicked link data:", data);
     return data;
   } catch (error) {
@@ -60,7 +59,17 @@ export async function updateClickCount(linkId) {
 
 export async function getTagsByLinkId(linkId) {
   try {
-    const { data } = await axios.get(`/api/links_tags/${linkId}`);
+    const { data } = await axios.get(`/api/links/links_tags/${linkId}`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getLinksByTag(tagId) {
+  try {
+    const { data } = await axios.get(`/api/tags/links_tags/${tagId}`);
+    console.log("this is the getlinksbytag data:", data);
     return data;
   } catch (error) {
     throw error;

@@ -104,23 +104,23 @@ async function createLinkTags(linkId, tagIdArray) {
   });
 }
 
-// async function getLinkById(linkId) {
-//   try {
-//     const {
-//       rows: [link],
-//     } = await client.query(
-//       `
-//     SELECT *
-//     FROM links
-//     WHERE id = $1
-//   `,
-//       [linkId]
-//     );
-//     return link;
-//   } catch (error) {
-//     throw error;
-//   }
-// }
+async function getLinkById(linkId) {
+  try {
+    const {
+      rows: [link],
+    } = await client.query(
+      `
+    SELECT *
+    FROM links
+    WHERE id = $1
+  `,
+      [linkId]
+    );
+    return link;
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function updateClickCount(linkId) {
   try {
@@ -158,6 +158,24 @@ async function getTagsByLinkId(linkId) {
   }
 }
 
+async function getLinksByTag(tagId) {
+  try {
+    const { rows: tag_links } = await client.query(
+      `
+        SELECT * FROM links
+        LEFT JOIN links_tags on links.id = links_tags."linkId"
+        JOIN tags on links_tags."tagId" = tags.id
+        WHERE "tagId" = $1
+        `,
+      [tagId]
+    );
+    console.log("associated linkId's:", tag_links);
+    return tag_links;
+  } catch (error) {
+    throw error;
+  }
+}
+
 // export
 module.exports = {
   client,
@@ -169,6 +187,7 @@ module.exports = {
   getAllLinksTags,
   updateClickCount,
   getTagsByLinkId,
+  getLinksByTag,
 };
 
 /*

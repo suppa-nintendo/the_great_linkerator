@@ -1,32 +1,23 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { Form } from "react-bootstrap";
 
-const SearchBar = ({ allLinks, links, setLinks }) => {
+const SearchBar = ({ allLinks, setLinks, searchVal, setSearchVal }) => {
   function searcher(val) {
-    console.log("-------------------");
-    console.log("search value:", val);
     let copy = [...allLinks];
     let filtered = [];
-    console.log("copy:", copy);
     copy.forEach((link) => {
       let linkName = link.name.toLowerCase();
       let linkComment = link.comment.toLowerCase();
       let linkUrl = link.link.toLowerCase();
       if (linkName.includes(val)) {
-        console.log("Match in name!");
         filtered.push(link);
       } else if (linkComment.includes(val)) {
-        console.log("Match in comment!");
         filtered.push(link);
       } else if (linkUrl.includes(val)) {
-        console.log("Match in url!");
         filtered.push(link);
-      } else {
-        console.log("No match!");
       }
     });
-    console.log("filtered copy:", filtered);
     setLinks(filtered);
   }
 
@@ -35,11 +26,11 @@ const SearchBar = ({ allLinks, links, setLinks }) => {
       <Form.Control
         style={{ width: "40%" }}
         type="text"
+        value={searchVal}
         placeholder="Search..."
         onChange={(event) => {
           event.preventDefault();
-          // console.log("allLinks:", allLinks);
-          // console.log("links:", links);
+          setSearchVal(event.target.value);
           searcher(event.target.value);
         }}
       />

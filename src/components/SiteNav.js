@@ -1,11 +1,19 @@
 import React from "react";
 
-import { Nav, Button, Col } from "react-bootstrap";
+import { Nav, Col, ButtonGroup } from "react-bootstrap";
 
 import CreateNewLink from "./CreateNewLink";
 import SearchBar from "./SearchBar";
+import SortButton from "./SortButton";
 
-const SiteNav = ({ allLinks, links, setLinks, newLinkRequest }) => {
+const SiteNav = ({
+  allLinks,
+  links,
+  setLinks,
+  newLinkRequest,
+  searchVal,
+  setSearchVal,
+}) => {
   return (
     <Nav
       style={{
@@ -16,14 +24,22 @@ const SiteNav = ({ allLinks, links, setLinks, newLinkRequest }) => {
       }}
     >
       <Col>
-        <SearchBar allLinks={allLinks} links={links} setLinks={setLinks} />
+        <SearchBar
+          allLinks={allLinks}
+          setLinks={setLinks}
+          searchVal={searchVal}
+          setSearchVal={setSearchVal}
+        />
       </Col>
       <Col xs="auto">
-        <CreateNewLink
-          links={links}
-          setLinks={setLinks}
-          newLinkRequest={newLinkRequest}
-        />
+        <ButtonGroup>
+          <SortButton links={links} setLinks={setLinks} />
+          <CreateNewLink
+            links={links}
+            setLinks={setLinks}
+            newLinkRequest={newLinkRequest}
+          />
+        </ButtonGroup>
       </Col>
     </Nav>
   );
